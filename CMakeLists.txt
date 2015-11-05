@@ -132,13 +132,19 @@ endif()
 # cmake mosh-fcgi makefile
 #============================================================
 
-find_package(Boost)
+find_package(Boost REQUIRED)
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
 endif()
 
+find_package (Threads REQUIRED)
+
 add_subdirectory(src)
 
-add_library(LIBMOSH_FCGI STATIC $<TARGET_OBJECTS:CORE> $<TARGET_OBJECTS:HTTP> $<TARGET_OBJECTS:HTML>)
+add_library(moshfcgi_s STATIC $<TARGET_OBJECTS:CORE> $<TARGET_OBJECTS:HTTP> $<TARGET_OBJECTS:HTML>)
+target_link_libraries (moshfcgi_s ${CMAKE_THREAD_LIBS_INIT})
+setup_project_lib(moshfcgi_s)
 
-setup_project_lib(LIBMOSH_FCGI)
+add_library(moshfcgi SHARED $<TARGET_OBJECTS:CORE> $<TARGET_OBJECTS:HTTP> $<TARGET_OBJECTS:HTML>)
+target_link_libraries (moshfcgi ${CMAKE_THREAD_LIBS_INIT})
+setup_project_lib(moshfcgi)
